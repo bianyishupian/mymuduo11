@@ -42,24 +42,24 @@ public:
     bool isInLoopThread() const { return _threadId == CurrentThread::tid(); } // threadId_为EventLoop创建时的线程id CurrentThread::tid()为当前线程id
 
 private:
-    void handleRdad();
-    void doPendingFunctors();
+    void handleRead();  // 给eventfd返回的文件描述符wakeupFd_绑定的事件回调 当wakeup()时 即有事件发生时 调用handleRead()读wakeupFd_的8字节 同时唤醒阻塞的epoll_wait
+    void doPendingFunctors();   // 执行上层回调
 
     using ChannelList = std::vector<Channel*>;
-    std::atomic_bool _looping;
-    std::atomic_bool _quit;
+    std::atomic_bool _looping;  // 原子操作 标识在执行loop循环
+    std::atomic_bool _quit;     // 原子操作 标识退出loop循环
 
-    const pid_t _threadId;
+    const pid_t _threadId;  // 标识了当前EventLoop的所属线程id
 
-    Timestamp _pollReturnTime;
-    std::unique_ptr<Poller> _poller;
+    Timestamp _pollReturnTime;  // Poller返回发生事件的Channels的时间点
+    std::unique_ptr<Poller> _poller;    // 当前EventLoop拥有的poller
 
-    int _wakeupFd;
+    int _wakeupFd;  // 作用：当mainLoop获取一个新用户的Channel 需通过轮询算法选择一个subLoop 通过该成员唤醒subLoop处理Channel
     std::unique_ptr<Channel> _wakeupChannel;
 
-    ChannelList _activeChannels;
+    ChannelList _activeChannels;    // 返回Poller检测到当前有事件发生的所有Channel列表
 
-    std::atomic_bool _callingPendingFunctors;
-    std::vector<Functor> _pendingFunctors;
-    std::mutex _mutex;
+    std::atomic_bool _callingPendingFunctors;   // 标识当前loop是否有需要执行的回调操作
+    std::vector<Functor> _pendingFunctors;      // 存储loop需要执行的所有回调操作
+    std::mutex _mutex;                          // 互斥锁 用来保护上面vector容器的线程安全操作
 };
