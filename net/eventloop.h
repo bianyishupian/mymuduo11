@@ -6,9 +6,9 @@
 #include <memory>
 #include <mutex>
 
-#include "mymuduo11/base/noncopyable.h"
-#include "mymuduo11/base/timestamp.h"
-#include "mymuduo11/base/currentthread.h"
+#include "../base/noncopyable.h"
+#include "../base/timestamp.h"
+#include "../base/currentthread.h"
 
 class Channel;
 class Poller;
