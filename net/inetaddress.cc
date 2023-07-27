@@ -2,7 +2,7 @@
 
 #include "inetaddress.h"
 
-InetAddress::InetAddress(uint16_t port = 0, std::string ip)
+InetAddress::InetAddress(uint16_t port, std::string ip)
 {
     memset(&_addr, 0, sizeof(_addr));
     _addr.sin_family = AF_INET;
