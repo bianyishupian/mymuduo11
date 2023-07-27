@@ -48,7 +48,7 @@ ssize_t Buffer::readFd(int fd, int *saveErrno)
 ssize_t Buffer::writeFd(int fd, int *saveErrno)
 {
     // 向socket fd上写数据，假如TCP发送缓冲区满
-    ssize_t n = ::write(fd, peek(), readableSpace()); // 从Buffer中有的数据(readableBytes)写到socket中
+    ssize_t n = ::write(fd, peek(), readableBytes()); // 从Buffer中有的数据(readableBytes)写到socket中
     if (n < 0)
     {
         *saveErrno = errno;
