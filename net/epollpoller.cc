@@ -60,10 +60,10 @@ void EpollPoller::updateChannel(Channel *channel)
     LOG_INFO("func=%s => fd=%d events=%d index=%d\n", __FUNCTION__, channel->fd(), channel->events(), index);
     if (index == kNew || index == kDeleted)
     {
-        int fd = channel->fd();
+        
         if (index == kNew)
         {
-            // assert(_channels.find(fd) == _channels.end());
+            int fd = channel->fd();
             _channels[fd] = channel;
         }
         else
@@ -77,7 +77,7 @@ void EpollPoller::updateChannel(Channel *channel)
     else
     {
         int fd = channel->fd();
-        (void)fd;
+        // (void)fd;
         // assert(_channels.find(fd) != _channels.end());
         // assert(_channels[fd] == channel);
         // assert(index == kAdded);
