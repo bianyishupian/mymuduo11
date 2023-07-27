@@ -3,13 +3,12 @@
 #include <sys/types.h>
 #include <string>
 /*
-好好看清楚Buffer的样子！！！
-+-------------------------+----------------------+---------------------+
-|    prependable bytes    |    readable bytes    |    writable bytes   |
-|                         |      (CONTENT)       |                     |
-+-------------------------+----------------------+---------------------+
-|                         |                      |                     |
-0        <=           readerIndex     <=     writerIndex             size
+    +-------------------------+----------------------+---------------------+
+    |    prependable bytes    |    readable bytes    |    writable bytes   |
+    |                         |      (CONTENT)       |                     |
+    +-------------------------+----------------------+---------------------+
+    |                         |                      |                     |
+    0        <=           readerIndex     <=     writerIndex             size
 */
 class Buffer
 {
@@ -54,7 +53,7 @@ public:
     {
         readerIndex_ = writerIndex_ = kCheapPrepend;
     }
-    std::string retrieveAllString()
+    std::string retrieveAllAsString()
     {
         // 把onMessage函数上报的Buffer数据转成string类型的数据返回
         return retrieveAsString(readableBytes()); // 应用可读取数据的长度
