@@ -3,9 +3,9 @@
 #include <string.h>
 // #include <assert.h>
 
-#include "mymuduo11/base/logger.h"
-#include "mymuduo11/net/channel.h"
-#include "mymuduo11/net/epollpoller.h"
+#include "../base/logger.h"
+#include "../net/channel.h"
+#include "../net/epollpoller.h"
 
 const int kNew = -1;
 const int kAdded = 1;
