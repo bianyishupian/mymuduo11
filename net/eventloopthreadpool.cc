@@ -8,6 +8,11 @@ EventLoopThreadPool::EventLoopThreadPool(EventLoop *baseLoop, const std::string 
 {
 }
 
+EventLoopThreadPool::~EventLoopThreadPool()
+{
+    // Don't delete loop, it's stack variable
+}
+
 void EventLoopThreadPool::start(const ThreadInitCallback &cb)
 {
     _started = true;
