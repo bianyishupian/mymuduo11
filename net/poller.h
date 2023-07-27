@@ -11,7 +11,7 @@ class EventLoop;
 
 // Base class for IO Multiplexing
 
-class Poller : noncopyable
+class Poller
 {
 public:
     using ChannelList = std::vector<Channel*>;
