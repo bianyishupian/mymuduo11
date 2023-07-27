@@ -12,7 +12,7 @@
 #include "eventloop.h"
 #include "../base/logger.h"
 
-static EventLoop *CheakLoopNotNull(EventLoop *loop)
+static EventLoop *CheckLoopNotNull(EventLoop *loop)
 {
     if (loop == nullptr)
     {
@@ -23,7 +23,7 @@ static EventLoop *CheakLoopNotNull(EventLoop *loop)
 
 TcpConnection::TcpConnection(EventLoop *loop, const std::string &nameArg, int sockfd,
                              const InetAddress &localAddr, const InetAddress &peerAddr)
-    : _loop(CheakLoopNotNull(loop)), _name(nameArg), _state(kConnecting), _reading(true), _socket(new Socket(sockfd)),
+    : _loop(CheckLoopNotNull(loop)), _name(nameArg), _state(kConnecting), _reading(true), _socket(new Socket(sockfd)),
       _channel(new Channel(loop, sockfd)), _localAddr(localAddr), _peerAddr(peerAddr), _highWaterMark(64 * 1024 * 1024)
 {
     _channel->setReadCallback(std::bind(&TcpConnection::handleRead, this, std::placeholders::_1));
@@ -126,7 +126,7 @@ void TcpConnection::shutdownInLoop()
 
 void TcpConnection::connectEstablished()
 {
-    setState(kDisconnected);    // 建立连接，设置一开始状态为连接态
+    setState(kConnected);    // 建立连接，设置一开始状态为连接态
     _channel->tie(shared_from_this());
     _channel->enableReading();  // 向Epoller注册channel的EPOLLIN读事件
 
