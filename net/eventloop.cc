@@ -4,10 +4,10 @@
 #include <errno.h>
 #include <memory>
 
-#include "mymuduo11/net/eventloop.h"
-#include "mymuduo11/net/poller.h"
-#include "mymuduo11/net/channel.h"
-#include "mymuduo11/base/logger.h"
+#include "../net/eventloop.h"
+#include "../net/poller.h"
+#include "../net/channel.h"
+#include "../base/logger.h"
 
 // __thread : 线程局部变量
 __thread EventLoop *t_loopInThisThread = nullptr;
@@ -126,7 +126,7 @@ void EventLoop::removeChannel(Channel *channel)
 }
 bool EventLoop::hasChannel(Channel *channel)
 {
-    _poller->hasChannel(channel);
+    return _poller->hasChannel(channel);
 }
 
 void EventLoop::handleRead()
