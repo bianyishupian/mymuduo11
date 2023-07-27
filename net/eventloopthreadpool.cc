@@ -35,7 +35,8 @@ EventLoop *EventLoopThreadPool::getNextLoop()
     EventLoop *loop = _baseLoop;
     if(!_loops.empty())
     {
-        loop = _loops[_next++];
+        loop = _loops[_next];
+        ++_next;
         if(_next >= _loops.size())
         {
             _next = 0;
