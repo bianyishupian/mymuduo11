@@ -109,7 +109,7 @@ void EpollPoller::removeChannel(Channel *channel)
     channel->set_index(kNew);
 }
 
-void EpollPoller::fillActiveChannels(int numEvents, ChannelList *activeChannels)
+void EpollPoller::fillActiveChannels(int numEvents, ChannelList *activeChannels) const
 {
     for (int i = 0; i < numEvents; ++i)
     {

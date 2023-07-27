@@ -20,9 +20,9 @@ public:
 
 private:
     static const int initEventListSize = 16;
-    void fillActiveChannels(int numEvents, ChannelList *activeChannels);
+    void fillActiveChannels(int numEvents, ChannelList *activeChannels) const;
 
-    void update(int opreation, Channel *Channel);
+    void update(int operation, Channel *Channel);
     using EventList = std::vector<epoll_event>;
 
     int _epollfd;
