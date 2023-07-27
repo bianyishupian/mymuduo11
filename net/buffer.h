@@ -51,7 +51,8 @@ public:
     }
     void retrieveAll()
     {
-        readerIndex_ = writerIndex_ = kCheapPrepend;
+        readerIndex_ = kCheapPrepend;
+        writerIndex_ = kCheapPrepend;
     }
     std::string retrieveAllAsString()
     {
@@ -120,7 +121,7 @@ private:
             writerIndex_ = readerIndex_ + readable;
         }
     }
-    std::vector<char> buffer_; // 为什么要用vector，因为可以动态扩容啊！！！
+    std::vector<char> buffer_; // 用vector，因为可以动态扩容
     size_t readerIndex_;
     size_t writerIndex_;
 };
