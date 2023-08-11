@@ -30,13 +30,13 @@ TcpConnection::TcpConnection(EventLoop *loop, const std::string &nameArg, int so
     _channel->setWriteCallback(std::bind(&TcpConnection::handleWrite, this));
     _channel->setCloseCallback(std::bind(&TcpConnection::handleClose, this));
     _channel->setErrorCallback(std::bind(&TcpConnection::handleError, this));
-    LOG_INFO("TcpConnection::ctor[%s] at fd=%d\n", _name.c_str(), sockfd);
+    LOG_INFO("TcpConnection::ctor[%s] at fd=%d", _name.c_str(), sockfd);
     _socket->setKeepAlive(true);
 }
 
 TcpConnection::~TcpConnection()
 {
-    LOG_INFO("TcpConnection::dtor[%s] at fd=%d state=%d\n", _name.c_str(), _channel->fd(), (int)_state);
+    LOG_INFO("TcpConnection::dtor[%s] at fd=%d state=%d", _name.c_str(), _channel->fd(), (int)_state);
 }
 
 void TcpConnection::send(const std::string &buf)
@@ -61,7 +61,7 @@ void TcpConnection::sendInLoop(const void *data, size_t len)
     bool faultError = false;
     if (_state == kDisconnected)
     {
-        LOG_ERROR("disconnected, give up writing");
+        LOG_ERROR("disconnected, give up writing\n");
     }
     // 表示channel_第一次开始写数据或者缓冲区没有待发送数据
     // 如果注册了可写事件并且之前的数据已经发送完毕
@@ -81,7 +81,7 @@ void TcpConnection::sendInLoop(const void *data, size_t len)
             nwrote = 0;
             if (errno != EWOULDBLOCK)
             {
-                LOG_ERROR("TcpConnection::sendInLoop");
+                LOG_ERROR("TcpConnection::sendInLoop\n");
                 if (errno == EPIPE || errno == ECONNRESET)
                 {
                     faultError = true;
@@ -167,7 +167,7 @@ void TcpConnection::handleRead(Timestamp receiveTime)
     else // 出错了
     {
         errno = savedErrno;
-        LOG_ERROR("TcpConnection::handleRead");
+        LOG_ERROR("TcpConnection::handleRead\n");
         handleError();
     }
 }
@@ -197,12 +197,12 @@ void TcpConnection::handleWrite()
         }
         else
         {
-            LOG_ERROR("TcpConnection::handleWrite");
+            LOG_ERROR("TcpConnection::handleWrite\n");
         }
     }
     else
     {
-        LOG_ERROR("TcpConnection fd=%d is down, no more writing", _channel->fd());
+        LOG_ERROR("TcpConnection fd=%d is down, no more writing\n", _channel->fd());
     }
 }
 /*
@@ -211,7 +211,7 @@ void TcpConnection::handleWrite()
 */
 void TcpConnection::handleClose()
 {
-    LOG_INFO("TcpConnection::handleClose fd=%d state=%d\n", _channel->fd(), (int)_state);
+    LOG_INFO("TcpConnection::handleClose fd=%d state=%d", _channel->fd(), (int)_state);
     setState(kDisconnected);
     _channel->disableAll(); // 注销所有感兴趣的事件
     TcpConnectionPtr connPtr(shared_from_this());

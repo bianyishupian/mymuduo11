@@ -53,7 +53,7 @@ void Socket::shutdownWrite()
 {
     if (shutdown(_sockfd, SHUT_WR) < 0)
     {
-        LOG_ERROR("shutdownWrite error");
+        LOG_ERROR("shutdownWrite error\n");
     }
 }
 

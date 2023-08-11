@@ -50,14 +50,14 @@ void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr)
     snprintf(buf, sizeof(buf), "-%s#%d", _ipPort.c_str(), _nextConnId);
     ++_nextConnId;
     std::string connName = _name + buf;
-    LOG_INFO("TcpServer::newConnection [%s] - new connection [%s] from %s\n", _name.c_str(), connName.c_str(), peerAddr.toIpPort().c_str());
+    LOG_INFO("TcpServer::newConnection [%s] - new connection [%s] from %s", _name.c_str(), connName.c_str(), peerAddr.toIpPort().c_str());
 
     sockaddr_in local;
     memset(&local, 0, sizeof(local));
     socklen_t addrlen = sizeof(local);
     if (getsockname(sockfd, (sockaddr *)&local, &addrlen) < 0)
     {
-        LOG_ERROR("sockets::getLocalAddr");
+        LOG_ERROR("sockets::getLocalAddr\n");
     }
 
     InetAddress localAddr(local);
@@ -77,7 +77,7 @@ void TcpServer::removeConnection(const TcpConnectionPtr &conn)
 
 void TcpServer::removeConnectionInLoop(const TcpConnectionPtr &conn)
 {
-    LOG_INFO("TcpServer::removeConnectionInLoop [%s] - connection %s\n", _name.c_str(), conn->name().c_str());
+    LOG_INFO("TcpServer::removeConnectionInLoop [%s] - connection %s", _name.c_str(), conn->name().c_str());
     _connections.erase(conn->name());
     EventLoop *ioLoop = conn->getLoop();
     ioLoop->queueInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
