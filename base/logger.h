@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "noncopyable.h"
+#include "lockqueue.h"
 
 #define LOG_INFO(logmsgFormat,...)                          \
     do                                                      \
@@ -10,37 +11,37 @@
         char buf[1024] = {0};                               \
         snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__);   \
         logger.log(buf);                                    \
-    } while (0);                                            \
+    } while (0)
 
 #define LOG_ERROR(logmsgFormat,...)                         \
     do                                                      \
     {                                                       \
         Logger &logger = Logger::instance();                \
-        logger.setLogLevel(ERROR);                           \
+        logger.setLogLevel(ERROR);                          \
         char buf[1024] = {0};                               \
         snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__);   \
         logger.log(buf);                                    \
-    } while (0);                                            \
+    } while (0)
 
-#define LOG_FATAL(logmsgFormat,...)                          \
+#define LOG_FATAL(logmsgFormat,...)                         \
     do                                                      \
     {                                                       \
         Logger &logger = Logger::instance();                \
-        logger.setLogLevel(FATAL);                           \
+        logger.setLogLevel(FATAL);                          \
         char buf[1024] = {0};                               \
         snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__);   \
         logger.log(buf);                                    \
-    } while (0);                                            \
+    } while (0)
 
-#define LOG_DEBUG(logmsgFormat,...)                          \
+#define LOG_DEBUG(logmsgFormat,...)                         \
     do                                                      \
     {                                                       \
         Logger &logger = Logger::instance();                \
-        logger.setLogLevel(DEBUG);                           \
+        logger.setLogLevel(DEBUG);                          \
         char buf[1024] = {0};                               \
         snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__);   \
         logger.log(buf);                                    \
-    } while (0);                                            \
+    } while (0)
 
 
 
@@ -53,12 +54,17 @@ enum LogLevel
     DEBUG
 };
 
-class Logger : noncopyable
+class Logger
 {
 public:
     static Logger &instance();  // 单例模式
     void setLogLevel(int level);
     void log(std::string msg);
 private:
-    int _level;
+    int level_;
+    LockQueue<std::string> lockQue_;
+
+    Logger();
+    Logger(const Logger&) = delete;
+    Logger(Logger&&) = delete;
 };

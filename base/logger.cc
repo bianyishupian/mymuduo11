@@ -1,7 +1,8 @@
 #include <iostream>
+#include <time.h>
 
 #include "logger.h"
-#include "timestamp.h"
+
 
 Logger &Logger::instance()
 {
@@ -11,29 +12,47 @@ Logger &Logger::instance()
 
 void Logger::setLogLevel(int level)
 {
-    _level = level;
+    level_ = level;
 }
 
 void Logger::log(std::string msg)
 {
-    std::string pre = "";
-    switch (_level)
-    {
-    case INFO:
-        pre = "[INFO]";
-        break;
-    case ERROR:
-        pre = "[ERROR]";
-        break;
-    case FATAL:
-        pre = "[FATAL]";
-        break;
-    case DEBUG:
-        pre = "[DEBUG]";
-        break;
-    default:
-        break;
-    }
+    lockQue_.Push(msg);
+}
 
-    std::cout << pre + Timestamp::now().toString() << " : " << msg << std::endl;
+Logger::Logger()
+{
+    std::thread writeLogTask([&](){
+        for(;;)
+        {
+            time_t now = time(nullptr);
+            tm *nowtm = localtime(&now);
+
+            char file_name[128];
+            sprintf(file_name, "%d-%d-%d-log.txt", nowtm->tm_year+1900, nowtm->tm_mon+1, nowtm->tm_mday);
+
+            FILE *f = fopen(file_name, "a+");
+            if(f == nullptr)
+            {
+                std::cout << "logger file : " << file_name << " open error!" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+
+            std::string msg = lockQue_.Pop();
+
+            char time_buf[128] = {0};
+            sprintf(time_buf, "%d:%d:%d =>[%s] ",
+                    nowtm->tm_hour,
+                    nowtm->tm_min,
+                    nowtm->tm_sec,
+                    (level_ == INFO ? "info" : "error"));
+            msg.insert(0, time_buf);
+            msg.append("\n");
+
+            fputs(msg.c_str(), f);
+            fclose(f);
+        }
+    });
+
+    writeLogTask.detach();
 }
